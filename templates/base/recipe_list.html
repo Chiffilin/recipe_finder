@@ -1,0 +1,26 @@
+<!-- templates/base/recipe_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recipe Finder</title>
+</head>
+
+
+<body>
+<h1>Рецепти</h1>
+<ul>
+    {% for recipe in recipes %}
+        <li>
+            <a href="{% url 'base:recipe_detail' recipe.pk %}">
+                <strong>{{ recipe.name }}</strong>
+            </a><br>
+            {{ recipe.description|truncatewords:20 }}<br>
+            <em>Час приготування: {{ recipe.cooking_time }} хв</em>
+        </li>
+    {% empty %}
+        <li>Рецептів поки що немає.</li>
+    {% endfor %}
+</ul>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!-- templates/base/recipe_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ recipe.title }}</title>
+</head>
+<body>
+<h1>{{ recipe.title }}</h1>
+
+<p><strong>Опис:</strong> {{ recipe.description }}</p>
+<p><strong>Час приготування:</strong> {{ recipe.cooking_time }} хв</p>
+
+{% if recipe.image %}
+    <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" style="max-width: 400px;">
+{% endif %}
+
+<h2>Інгредієнти</h2>
+<ul>
+    {% for ingredient in recipe.ingredients.all %}
+        <li>{{ ingredient.name }}</li>
+    {% endfor %}
+</ul>
+
+<p><a href="{% url 'base:recipe_list' %}">← Назад до списку</a></p>
+</body>
+</html>

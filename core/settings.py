@@ -13,7 +13,10 @@ SECRET_KEY = "django-insecure-8dz8^kletl(8b%0=@6qiu_oihdz1fc_hf(wts@!musz-d((257
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "site.homework.local.net",
+    "127.0.0.1",
+]
 DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -67,8 +70,8 @@ WSGI_APPLICATION = "core.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+        "NAME": BASE_DIR / "db" / "db.sqlite3",
+    },
 }
 
 

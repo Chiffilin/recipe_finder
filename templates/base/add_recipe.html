@@ -1,0 +1,9 @@
+<h1>Add a New Recipe</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Recipe</button>
+</form>
+
+<a href="{% url 'base:recipe_list' %}">Back to recipes</a>

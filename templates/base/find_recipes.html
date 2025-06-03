@@ -1,0 +1,28 @@
+<!-- templates/base/find_recipes.html -->
+
+<h1>Find Recipes by Ingredients</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    <label for="ingredients">Enter ingredients (comma-separated):</label><br>
+    <input type="text" name="ingredients_text" placeholder="e.g. milk, eggs, sugar">
+    <button type="submit">Search Recipes</button>
+</form>
+
+
+{% if recipes is not None %}
+    <h2>Results:</h2>
+    {% if recipes %}
+        <ul>
+            {% for recipe in recipes %}
+                <li>
+                    <strong>{{ recipe.name }}</strong><br>
+                    {{ recipe.instructions }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No recipes found for selected ingredients.</p>
+    {% endif %}
+
+{% endif %}
