@@ -13,6 +13,7 @@ class Recipe(models.Model):
     description = models.TextField(blank=True)
     instructions = models.TextField()
     ingredients = models.ManyToManyField(Ingredient)
+    cooking_time = models.PositiveIntegerField(help_text="Час приготування в хвилинах", default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
