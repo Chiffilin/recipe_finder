@@ -1,0 +1,8 @@
+<div class="actions">
+    {% with pk=recipe.pk %}
+        {% url 'base:update_recipe' pk=pk as url %}
+        {% include "_components/button_with_nav.html" with url=url text="Update" %}
+        {% url 'base:delete_recipe' pk=pk as url %}
+        {% include "_components/button_with_nav.html" with url=url variant="danger" text="Delete" %}
+    {% endwith %}
+</div>

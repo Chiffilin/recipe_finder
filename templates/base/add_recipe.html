@@ -7,6 +7,5 @@
     {{ form.as_p }}
     <button type="submit">Add Recipe</button>
 </form>
-
-<a href="{% url 'base:recipe_list' %}">Back to recipes</a>
+    <p>{% include '_helpers/_footer.html' %}</p>
 {% endblock content %}

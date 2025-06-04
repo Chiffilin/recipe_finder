@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -65,3 +66,35 @@ def add_recipe(request: HttpRequest) -> HttpResponse:
         form = RecipeForm()
 
     return render(request, "base/add_recipe.html", {"form": form})
+
+
+@login_required
+def delete_recipe(request: HttpRequest, pk: int) -> HttpResponse:
+    recipe = get_object_or_404(Recipe, pk=pk)
+
+    if request.method == "POST":
+        recipe.delete()
+        return redirect("base:recipe_list")
+
+    return render(request, "base/confirm_delete.html", {"recipe": recipe})
+
+
+def update_recipe(request: HttpRequest, pk: int) -> HttpResponse:
+    recipe = get_object_or_404(Recipe, pk=pk)
+
+    if request.method == "POST":
+        form = RecipeForm(request.POST, instance=recipe)
+        if form.is_valid():
+            form.save()
+            return redirect("base:recipe_list")  # або інша сторінка після оновлення
+    else:
+        form = RecipeForm(instance=recipe)
+
+    return render(
+        request,
+        "base/update_recipe.html",
+        {
+            "form": form,
+            "recipe": recipe,
+        },
+    )

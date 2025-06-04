@@ -1,7 +1,7 @@
 <!-- templates/base/find_recipes.html -->
 
 {% block content_find %}
-<h1>Find Recipes by Ingredients</h1>
+    <h3>Find Recipes by Ingredients</h3>
 
 <form method="POST">
     {% csrf_token %}
@@ -31,6 +31,5 @@
     {% endif %}
 
 {% endif %}
-    <p><a href="{% url 'base:recipe_list' %}">← Назад до списку</a></p>
-
+    {% include '_helpers/_footer.html' %}
 {% endblock content_find %}

@@ -1,5 +1,5 @@
 <!-- templates/base/recipe_detail.html -->
-{% extends "_helpers/_base.html" %}
+{#{% extends "_helpers/_base.html" %}#}
 {% block content %}
 <body>
 <h1>{{ recipe.title }}</h1>
@@ -18,6 +18,7 @@
     {% endfor %}
 </ul>
 
-<p><a href="{% url 'base:recipe_list' %}">← Назад до списку</a></p>
+{% include "_helpers/_footer.html" %}
+
 </body>
 {% endblock content %}

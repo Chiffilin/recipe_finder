@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 class Ingredient(models.Model):
@@ -19,3 +20,9 @@ class Recipe(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    def get_edit_url(self):
+        return reverse("base:edit_recipe", kwargs={"pk": self.pk})
+
+    def get_delete_url(self):
+        return reverse("base:delete_recipe", kwargs={"pk": self.pk})

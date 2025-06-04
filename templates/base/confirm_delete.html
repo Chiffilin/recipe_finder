@@ -1,0 +1,10 @@
+{% extends "_helpers/_base.html" %}
+{% block content %}
+    <h2>Видалити рецепт "{{ recipe.name }}"?</h2>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Так, видалити</button>
+        <a href="{% url 'base:recipe_list' %}">Скасувати</a>
+    </form>
+
+{% endblock content %}

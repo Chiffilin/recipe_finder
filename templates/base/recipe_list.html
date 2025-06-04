@@ -2,16 +2,17 @@
 
 {% block content %}
 <body>
-
 <h1>Рецепти</h1>
 <ul>
     {% for recipe in recipes %}
         <li>
             <a href="{% url 'base:recipe_detail' recipe.pk %}">
                 <strong>{{ recipe.name }}</strong>
-            </a><br>
+            </a>
+            <br>
             {{ recipe.description|truncatewords:20 }}<br>
             <em>Час приготування: {{ recipe.cooking_time }} хв</em>
+            {% include "_helpers/_recipe_actions.html" with recipe=recipe %}
         </li>
     {% empty %}
         <li>Рецептів поки що немає.</li>

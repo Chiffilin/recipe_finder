@@ -6,7 +6,7 @@ from apps.base.models import Ingredient, Recipe
 class RecipeForm(forms.ModelForm):
     ingredients = forms.ModelMultipleChoiceField(
         queryset=Ingredient.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.SelectMultiple(attrs={"class": "select2"}),
         required=False,
     )
     new_ingredients = forms.CharField(
@@ -17,9 +17,15 @@ class RecipeForm(forms.ModelForm):
 
     class Meta:
         model = Recipe
-        fields = ["name", "ingredients", "new_ingredients", "description"]
+        fields: str = [
+            "name",
+            "ingredients",
+            "new_ingredients",
+            "description",
+            "cooking_time",
+        ]
 
-    def save(self, commit=True):
+    def save(self, commit=True) -> Recipe:
         recipe = super().save(commit=False)
 
         if commit:
