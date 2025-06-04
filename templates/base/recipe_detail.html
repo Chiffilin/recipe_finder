@@ -1,10 +1,6 @@
 <!-- templates/base/recipe_detail.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ recipe.title }}</title>
-</head>
+{% extends "_helpers/_base.html" %}
+{% block content %}
 <body>
 <h1>{{ recipe.title }}</h1>
 
@@ -24,4 +20,4 @@
 
 <p><a href="{% url 'base:recipe_list' %}">← Назад до списку</a></p>
 </body>
-</html>
+{% endblock content %}

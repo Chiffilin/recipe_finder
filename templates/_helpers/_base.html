@@ -1,15 +1,29 @@
 {% extends "_helpers/_base_root.html" %}
 {% block html %}
     <html lang="en">
-
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="description" content="My web page_title"/>
+        <meta name="keywords" content="web, django, lab"/>
+        <title>
+            {% block title %}
+                {% if page_title %}
+                    {{ page_title }}
+                {% else %}
+                    My page
+                {% endif %}
+                | My site
+            {% endblock title %}
+        </title>
+    </head>
     <body>
-
+    {% include "_helpers/_header.html" %}
     <div class="main">
         {% block content %}
             <h1>Hello, World!</h1>
         {% endblock content %}
     </div>
-
     </body>
     </html>
 {% endblock html %}

@@ -1,5 +1,6 @@
 <!-- templates/base/find_recipes.html -->
 
+{% block content_find %}
 <h1>Find Recipes by Ingredients</h1>
 
 <form method="POST">
@@ -16,9 +17,13 @@
         <ul>
             {% for recipe in recipes %}
                 <li>
-                    <strong>{{ recipe.name }}</strong><br>
-                    {{ recipe.instructions }}
+                    <a href="{% url 'base:recipe_detail' recipe.pk %}">
+                        <strong>{{ recipe.name }}</strong>
+                    </a><br>
+                    {{ recipe.description|truncatewords:20 }}<br>
+                    <em>Час приготування: {{ recipe.cooking_time }} хв</em>
                 </li>
+
             {% endfor %}
         </ul>
     {% else %}
@@ -26,3 +31,6 @@
     {% endif %}
 
 {% endif %}
+    <p><a href="{% url 'base:recipe_list' %}">← Назад до списку</a></p>
+
+{% endblock content_find %}

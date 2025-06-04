@@ -1,15 +1,30 @@
+
 <header>
     <nav>
         <ul>
-            <li>
-                <a href="{% url 'base:recipe_list' %}">Recipe list</a>
-            </li>
             <li>
                 <a href="{% url 'base:home' %}">
                     Home
                 </a>
             </li>
 
+            <li>
+                <a href="{% url 'base:recipe_list' %}">
+                    Recipe list
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'base:find_recipes' %}">
+                    Find
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'base:add_recipe' %}">
+                    Add recipe
+                </a>
+            </li>
         </ul>
     </nav>
 </header>

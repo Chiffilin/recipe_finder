@@ -1,3 +1,5 @@
+{% extends "_helpers/_base.html" %}
+{% block content %}
 <h1>Add a New Recipe</h1>
 
 <form method="POST">
@@ -7,3 +9,4 @@
 </form>
 
 <a href="{% url 'base:recipe_list' %}">Back to recipes</a>
+{% endblock content %}
