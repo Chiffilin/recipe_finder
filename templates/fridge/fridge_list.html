@@ -1,0 +1,19 @@
+{% extends "_helpers/_base.html" %}
+
+{% block content %}
+    <h2>Мій холодильник</h2>
+
+    <a href="{% url 'fridge:add_fridge_item' %}">
+        <button>Додати інгредієнт</button>
+    </a>
+
+    <ul>
+        {% for item in items %}
+            <li>
+                {{ item.ingredient.name }} – {{ item.quantity }} (до {{ item.expiration_date|default:"без дати" }})
+            </li>
+        {% empty %}
+            <li>Холодильник порожній.</li>
+        {% endfor %}
+    </ul>
+{% endblock content %}

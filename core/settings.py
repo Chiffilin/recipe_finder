@@ -4,6 +4,12 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 APPS_DIR = BASE_DIR / "apps"
 
+AUTH_USER_MODEL = "users.User"
+# settings.py
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+LOGIN_URL = "/accounts/login/"
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -29,6 +35,8 @@ DJANGO_APPS = [
 
 LOCAL_APPS = [
     "apps.base",
+    "apps.users",
+    "apps.fridge",
 ]
 THIRD_PARTY_APPS: list = []
 

@@ -19,7 +19,14 @@
                     Add recipe
                 </a>
             </li>
+            <li>
+                <a href="{% url 'fridge:fridge' %}">
+                    Fridge
+                </a>
+            </li>
 
         </ul>
     </nav>
+    {% include "_components/login_functional.html" %}
+
 </header>
