@@ -1,8 +1,36 @@
-<h2>Редагувати рецепт: {{ recipe.name }}</h2>
+{% extends "_helpers/_base.html" %}
 
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Оновити рецепт</button>
-</form>
-{% include '_helpers/_footer.html' %}
+{% block content %}
+    <div class="container mt-5">
+        <div class="card shadow">
+            <div class="card-body">
+                <h2 class="card-title mb-4">
+                    {% if form.instance.pk %}Редагування рецепта{% else %}Створення нового рецепта{% endif %}
+                </h2>
+
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                                <div class="form-text">{{ field.help_text }}</div>
+                            {% endif %}
+                            {% if field.errors %}
+                                <div class="text-danger small">
+                                    {{ field.errors|striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-success">Зберегти</button>
+                        <a href="{% url 'base:recipe_list' %}" class="btn btn-secondary">← Назад</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

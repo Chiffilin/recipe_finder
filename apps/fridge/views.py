@@ -8,7 +8,25 @@ from .models import FridgeItem
 # @login_required
 def fridge_view(request: HttpRequest) -> HttpResponse:
     items = FridgeItem.objects.filter(user=request.user)
-    return render(request, "fridge/fridge_list.html", {"items": items})
+
+    if request.method == "POST":
+        form = FridgeItemForm(request.POST)
+        if form.is_valid():
+            item = form.save(commit=False)
+            item.user = request.user
+            item.save()
+            return redirect("fridge:fridge")
+    else:
+        form = FridgeItemForm()
+
+    return render(
+        request,
+        "fridge/fridge_list.html",
+        {
+            "items": items,
+            "form": form,
+        },
+    )
 
 
 # @login_required

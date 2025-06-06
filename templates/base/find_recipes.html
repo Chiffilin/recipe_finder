@@ -1,35 +1,60 @@
-<!-- templates/base/find_recipes.html -->
+{% extends "_helpers/_base.html" %}
+{% block content %}
 
-{% block content_find %}
-    <h3>Find Recipes by Ingredients</h3>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title mb-4">🔎 Пошук рецептів за інгредієнтами</h3>
 
-<form method="POST">
-    {% csrf_token %}
-    <label for="ingredients">Enter ingredients (comma-separated):</label><br>
-    <input type="text" name="ingredients_text" placeholder="e.g. milk, eggs, sugar">
-    <button type="submit">Search Recipes</button>
-</form>
+                        <form method="POST" class="mb-4">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" name="ingredients_text" class="form-control"
+                                       placeholder="Наприклад: молоко, яйця, цукор">
+                                <button type="submit" class="btn btn-primary">Знайти</button>
+                            </div>
+                            <div class="form-text mt-2">Введіть інгредієнти через кому. Наприклад: <em>молоко, яйця</em>
+                            </div>
+                        </form>
 
+                        {% if recipes is not None %}
+                            <h5 class="mb-3">🧾 Результати:</h5>
+                            {% if recipes %}
+                                <div class="row">
+                                    {% for recipe in recipes %}
+                                        <div class="col-md-6 mb-4">
+                                            <div class="card h-100 border-primary">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">
+                                                        <a href="{% url 'base:recipe_detail' recipe.pk %}"
+                                                           class="text-decoration-none text-primary">
+                                                            {{ recipe.name }}
+                                                        </a>
+                                                    </h5>
+                                                    <p class="card-text text-muted small">
+                                                        {{ recipe.description|truncatewords:20 }}
+                                                    </p>
+                                                    <p class="card-text"><em>⏱️ {{ recipe.cooking_time }} хв</em></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="alert alert-warning mt-3">
+                                    Немає рецептів з такими інгредієнтами.
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
 
-{% if recipes is not None %}
-    <h2>Results:</h2>
-    {% if recipes %}
-        <ul>
-            {% for recipe in recipes %}
-                <li>
-                    <a href="{% url 'base:recipe_detail' recipe.pk %}">
-                        <strong>{{ recipe.name }}</strong>
-                    </a><br>
-                    {{ recipe.description|truncatewords:20 }}<br>
-                    <em>Час приготування: {{ recipe.cooking_time }} хв</em>
-                </li>
-
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No recipes found for selected ingredients.</p>
-    {% endif %}
-
-{% endif %}
-    {% include '_helpers/_footer.html' %}
-{% endblock content_find %}
+        <div class="mt-4">
+            {% include '_helpers/_footer.html' %}
+        </div>
+    </div>
+{% endblock content %}

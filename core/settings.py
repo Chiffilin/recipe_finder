@@ -7,7 +7,7 @@ APPS_DIR = BASE_DIR / "apps"
 AUTH_USER_MODEL = "users.User"
 # settings.py
 LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/fridge/"
 LOGIN_URL = "/accounts/login/"
 
 # Quick-start development settings - unsuitable for production

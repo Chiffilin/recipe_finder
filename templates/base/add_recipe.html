@@ -1,11 +1,75 @@
 {% extends "_helpers/_base.html" %}
 {% block content %}
-<h1>Add a New Recipe</h1>
+    <div class="container mt-4">
+        <h1 class="mb-4">Додати новий рецепт</h1>
 
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Add Recipe</button>
-</form>
-    <p>{% include '_helpers/_footer.html' %}</p>
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="{{ form.name.id_for_label }}" class="form-label">Назва рецепту</label>
+                {{ form.name }}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.description.id_for_label }}" class="form-label">Опис</label>
+                {{ form.description }}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.cooking_time.id_for_label }}" class="form-label">Час приготування (хв)</label>
+                {{ form.cooking_time }}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.calories.id_for_label }}" class="form-label">Калорії</label>
+                {{ form.calories }}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.protein.id_for_label }}" class="form-label">Білки (г)</label>
+                {{ form.protein }}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.fat.id_for_label }}" class="form-label">Жири (г)</label>
+                {{ form.fat }}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.carbohydrates.id_for_label }}" class="form-label">Вуглеводи (г)</label>
+                {{ form.carbohydrates }}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.rating.id_for_label }}" class="form-label">Оцінка</label>
+                {{ form.rating }}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.category.id_for_label }}" class="form-label">Категорія</label>
+                {{ form.category }}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.cuisine.id_for_label }}" class="form-label">Кухня</label>
+                {{ form.cuisine }}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.ingredients.id_for_label }}" class="form-label">Інгредієнти</label>
+                {{ form.ingredients }}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.new_ingredients.id_for_label }}" class="form-label">Нові інгредієнти</label>
+                {{ form.new_ingredients }}
+                <div class="form-text">{{ form.new_ingredients.help_text }}</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Додати рецепт</button>
+        </form>
+
+        <p class="mt-4">{% include '_helpers/_footer.html' %}</p>
+    </div>
 {% endblock content %}

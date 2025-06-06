@@ -1,32 +1,32 @@
-
 <header>
-    <nav>
-        <ul>
-            <li>
-                <a href="{% url 'base:recipe_list' %}">
-                    Home
-                </a>
-            </li>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'base:recipe_list' %}">RecipeFinder</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-            <li>
-                <a href="{% url 'base:find_recipes' %}">
-                    Find
-                </a>
-            </li>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'base:recipe_list' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'base:find_recipes' %}">Find</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'base:add_recipe' %}">Add Recipe</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'fridge:fridge' %}">Fridge</a>
+                    </li>
+                </ul>
 
-            <li>
-                <a href="{% url 'base:add_recipe' %}">
-                    Add recipe
-                </a>
-            </li>
-            <li>
-                <a href="{% url 'fridge:fridge' %}">
-                    Fridge
-                </a>
-            </li>
-
-        </ul>
+                <!-- Вхід/вихід справа -->
+                <div class="d-flex">
+                    {% include "_components/login_functional.html" %}
+                </div>
+            </div>
+        </div>
     </nav>
-    {% include "_components/login_functional.html" %}
-
 </header>

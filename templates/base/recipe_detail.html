@@ -1,24 +1,53 @@
-<!-- templates/base/recipe_detail.html -->
-{#{% extends "_helpers/_base.html" %}#}
+{% extends "_helpers/_base.html" %}
+
 {% block content %}
-<body>
-<h1>{{ recipe.title }}</h1>
+    <div class="container mt-4">
+        <div class="card shadow">
+            <div class="card-body">
+                <h2 class="card-title">{{ recipe.name }}</h2>
 
-<p><strong>Опис:</strong> {{ recipe.description }}</p>
-<p><strong>Час приготування:</strong> {{ recipe.cooking_time }} хв</p>
+                {% if recipe.category %}
+                    <span class="badge bg-primary">{{ recipe.category }}</span>
+                {% endif %}
+                {% if recipe.cuisine %}
+                    <span class="badge bg-secondary">{{ recipe.cuisine }}</span>
+                {% endif %}
 
-{% if recipe.image %}
-    <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" style="max-width: 400px;">
-{% endif %}
+                <hr>
 
-<h2>Інгредієнти</h2>
-<ul>
-    {% for ingredient in recipe.ingredients.all %}
-        <li>{{ ingredient.name }}</li>
-    {% endfor %}
-</ul>
+                <p class="card-text">{{ recipe.description }}</p>
 
-{% include "_helpers/_footer.html" %}
+                <h5 class="mt-4">🧾 Інструкції:</h5>
+                <pre class="bg-light p-3 rounded">{{ recipe.instructions }}</pre>
 
-</body>
-{% endblock content %}
+                <h5 class="mt-4">🧂 Інгредієнти:</h5>
+                <ul>
+                    {% for ingredient in recipe.ingredients.all %}
+                        <li>{{ ingredient.name }}</li>
+                    {% empty %}
+                        <li><em>Немає інгредієнтів</em></li>
+                    {% endfor %}
+                </ul>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <p><strong>Час приготування:</strong> {{ recipe.cooking_time }} хв</p>
+                        <p><strong>Рейтинг:</strong> {{ recipe.rating|default:"—" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Калорії:</strong> {{ recipe.calories|default:"—" }}</p>
+                        <p><strong>Білки:</strong> {{ recipe.protein|default:"—" }} г</p>
+                        <p><strong>Жири:</strong> {{ recipe.fat|default:"—" }} г</p>
+                        <p><strong>Вуглеводи:</strong> {{ recipe.carbohydrates|default:"—" }} г</p>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex justify-content-between">
+                    <a href="{% url 'base:update_recipe' recipe.pk %}" class="btn btn-warning">Редагувати</a>
+                    <a href="{% url 'base:delete_recipe' recipe.pk %}" class="btn btn-danger">Видалити</a>
+                    <a href="{% url 'base:recipe_list' %}" class="btn btn-secondary">← Назад</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

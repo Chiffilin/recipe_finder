@@ -15,14 +15,22 @@ class Recipe(models.Model):
     instructions = models.TextField()
     ingredients = models.ManyToManyField(Ingredient)
 
+    rating = models.FloatField(blank=True, null=True)
+    category = models.CharField(max_length=100, blank=True, null=True)
+    calories = models.IntegerField(blank=True, null=True)
+    protein = models.FloatField(blank=True, null=True)
+    fat = models.FloatField(blank=True, null=True)
+    carbohydrates = models.FloatField(blank=True, null=True)
+    cuisine = models.CharField(max_length=100, blank=True, null=True)
+
     cooking_time = models.PositiveIntegerField(help_text="Час приготування в хвилинах", default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
         return self.name
 
-    def get_edit_url(self):
+    def get_edit_url(self) -> str:
         return reverse("base:edit_recipe", kwargs={"pk": self.pk})
 
-    def get_delete_url(self):
+    def get_delete_url(self) -> str:
         return reverse("base:delete_recipe", kwargs={"pk": self.pk})

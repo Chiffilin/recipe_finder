@@ -10,10 +10,11 @@
     <ul>
         {% for item in items %}
             <li>
-                {{ item.ingredient.name }} – {{ item.quantity }} (до {{ item.expiration_date|default:"без дати" }})
+                {{ item.ingredient.name }} — {{ item.quantity }} {{ item.unit }}
+                {% if item.is_expired %} <strong style="color:red">(Прострочено)</strong> {% endif %}
             </li>
         {% empty %}
-            <li>Холодильник порожній.</li>
+            <li>Холодильник порожній</li>
         {% endfor %}
     </ul>
 {% endblock content %}
