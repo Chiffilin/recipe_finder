@@ -15,4 +15,3 @@ python manage.py collectstatic --noinput
 python manage.py migrate --noinput
 
 
-#python manage.py chats generate --amount 7 --initial
