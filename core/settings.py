@@ -6,9 +6,9 @@ APPS_DIR = BASE_DIR / "apps"
 
 AUTH_USER_MODEL = "users.User"
 # settings.py
-LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/fridge/"
-LOGIN_URL = "/accounts/login/"
+LOGIN_REDIRECT_URL = "base:home"
+LOGOUT_REDIRECT_URL = "base:home"
+LOGIN_URL = "login"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -38,7 +38,10 @@ LOCAL_APPS = [
     "apps.users",
     "apps.fridge",
 ]
-THIRD_PARTY_APPS: list = []
+THIRD_PARTY_APPS: list = [
+    "crispy_forms",
+    "crispy_bootstrap5",
+]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
 
@@ -72,7 +75,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "core.wsgi.application"
 
-
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
