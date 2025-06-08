@@ -1,20 +1,35 @@
 {% extends "_helpers/_base.html" %}
 
 {% block content %}
-    <h2>Мій холодильник</h2>
+    <div class="container mt-4">
+        <h2 class="mb-4">Мій холодильник</h2>
 
-    <a href="{% url 'fridge:add_fridge_item' %}">
-        <button>Додати інгредієнт</button>
-    </a>
+        <div class="mb-3">
+            <a href="{% url 'fridge:add_fridge_item' %}" class="btn btn-primary">
+                Додати інгредієнт
+            </a>
+        </div>
 
-    <ul>
-        {% for item in items %}
-            <li>
+        {% if items %}
+            <ul class="list-group">
+                {% for item in items %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
                 {{ item.ingredient.name }} — {{ item.quantity }} {{ item.unit }}
-                {% if item.is_expired %} <strong style="color:red">(Прострочено)</strong> {% endif %}
-            </li>
-        {% empty %}
-            <li>Холодильник порожній</li>
-        {% endfor %}
-    </ul>
+                            {% if item.is_expired %}
+                                <span class="badge bg-danger text-white">Прострочено</span>
+                            {% endif %}
+                        </div>
+
+                        {% include "fridge/_fridge_item_actions.html" with item=item %}
+                    </li>
+                {% endfor %}
+            </ul>
+
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                Холодильник порожній
+            </div>
+        {% endif %}
+    </div>
 {% endblock content %}

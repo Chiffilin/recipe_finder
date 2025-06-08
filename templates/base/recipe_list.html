@@ -3,7 +3,8 @@
 {% block content %}
     <div class="container py-4">
         <h1 class="mb-4">Рецепти</h1>
-
+        <form class="d-flex mb-4" method="get" action="{% url 'base:recipe_list' %}">
+        </form>
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             {% for recipe in recipes %}
                 <div class="col">

@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -25,8 +26,22 @@ def home(request: HttpRequest) -> HttpResponse:
 
 
 def recipe_list(request: HttpRequest) -> HttpResponse:
+    # recipes = Recipe.objects.all()
+    # return render(request, "base/recipe_list.html", {"recipes": recipes})
+    query = request.GET.get("q", "")
     recipes = Recipe.objects.all()
-    return render(request, "base/recipe_list.html", {"recipes": recipes})
+
+    if query:
+        recipes = recipes.filter(Q(name__icontains=query) | Q(description__icontains=query))
+
+    return render(
+        request,
+        "base/recipe_list.html",
+        {
+            "recipes": recipes,
+            "query": query,  # ← якщо захочеш виводити в шаблоні
+        },
+    )
 
 
 def recipe_detail(request: HttpRequest, pk) -> HttpResponse:
@@ -35,25 +50,13 @@ def recipe_detail(request: HttpRequest, pk) -> HttpResponse:
 
 
 def find_recipes(request: HttpRequest) -> HttpResponse:
-    recipes = None
-    selected_ingredients = []
+    query = request.GET.get("q")
+    recipes = Recipe.objects.all()
 
-    if request.method == "POST":
-        ingredients_text = request.POST.get("ingredients_text", "")
-        # Розбиваємо за комами, прибираємо пробіли
-        selected_ingredients = [i.strip().lower() for i in ingredients_text.split(",") if i.strip()]
+    if query:
+        recipes = recipes.filter(Q(name__icontains=query) | Q(description__icontains=query))
 
-        # Пошук рецептів, які містять хоча б один із введених інгредієнтів
-        recipes = Recipe.objects.filter(ingredients__name__in=selected_ingredients).distinct()
-
-    return render(
-        request,
-        "base/find_recipes.html",
-        {
-            "recipes": recipes,
-            "selected": ", ".join(selected_ingredients),
-        },
-    )
+    return render(request, "base/recipe_list.html", {"recipes": recipes})
 
 
 def add_recipe(request: HttpRequest) -> HttpResponse:

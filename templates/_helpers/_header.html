@@ -6,36 +6,31 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <ul class="collapse navbar-collapse" id="navbarNav">
+            <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'base:recipe_list' %}">Home</a>
+                        <a class="nav-link" href="{% url 'base:recipe_list' %}">Головна</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'base:find_recipes' %}">Find</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'base:add_recipe' %}">Add Recipe</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'fridge:fridge' %}">Fridge</a>
-                    </li>
-
 
                     {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'base:add_recipe' %}">Додати рецепт</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'fridge:fridge' %}">Холодильник</a>
+                    </li>
                         <li class="nav-item dropdown">
-                            {#                        {% if user.avatar %}<img src="{{ user.avatar.url }}" alt="avatar" class="avatar">{% endif %}#}
                             <span class="nav-link dropdown-toggle"
                                   href="#"
                                   id="navbarDropdown"
                                   role="button"
                                   data-bs-toggle="dropdown"
-                                  aria-expanded="false">Hello, {{ user.username }}</span>
+                                  aria-expanded="false">Привіт, {{ user.username }}</span>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li>
                                     <form method="post" action="{% url 'logout' %}">
                                         {% csrf_token %}
-                                        <button type="submit" class="dropdown-item">Logout</button>
+                                        <button type="submit" class="dropdown-item">Вийти</button>
                                     </form>
                                 </li>
                                 {# Add more dropdown items here if needed #}
@@ -43,12 +38,22 @@
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                            <a class="nav-link" href="{% url 'login' %}">Увійти</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'users:register' %}">Register</a>
+                            <a class="nav-link" href="{% url 'users:register' %}">Реєстрація</a>
                         </li>
                     {% endif %}
-        </div>
+                </ul>
+            </div>
+            <form class="d-flex" method="get" action="{% url 'base:recipe_list' %}">
+                <input class="form-control me-2"
+                       type="search"
+                       placeholder="Пошук рецептів"
+                       aria-label="Search"
+                       name="q"
+                       value="{{ request.GET.q }}">
+                <button class="btn btn-outline-success" type="submit">Пошук</button>
+            </form>
     </nav>
 </header>

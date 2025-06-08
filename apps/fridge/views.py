@@ -1,5 +1,6 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms.fridge_form import FridgeItemForm
 from .models import FridgeItem
@@ -32,13 +33,37 @@ def fridge_view(request: HttpRequest) -> HttpResponse:
 # @login_required
 def add_fridge_item(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
-        form = FridgeItemForm(request.POST)
+        form = FridgeItemForm(request.POST, user=request.user)
         if form.is_valid():
-            fridge_item = form.save(commit=False)
-            fridge_item.user = request.user
-            fridge_item.save()
+            form.save()
+            return redirect("fridge:fridge")  # або куди потрібно
+    else:
+        form = FridgeItemForm(user=request.user)
+
+    return render(request, "fridge/add_item.html", {"form": form})
+
+
+@login_required
+def update_fridge_item(request: HttpRequest, pk):
+    item = get_object_or_404(FridgeItem, pk=pk, user=request.user)
+
+    if request.method == "POST":
+        form = FridgeItemForm(request.POST, instance=item, user=request.user)  # ✅ user тут
+        if form.is_valid():
+            form.save()  # ❌ не передаємо user тут
             return redirect("fridge:fridge")
     else:
-        form = FridgeItemForm()
+        form = FridgeItemForm(instance=item, user=request.user)
 
-    return render(request, "fridge/fridge_form.html", {"form": form})
+    return render(request, "fridge/fridge_form.html", {"form": form, "title": "Оновити інгредієнт"})
+
+
+@login_required
+def delete_fridge_item(request: HttpRequest, pk) -> HttpResponse:
+    item = get_object_or_404(FridgeItem, pk=pk, user=request.user)
+
+    if request.method == "POST":
+        item.delete()
+        return redirect("fridge:fridge")
+
+    return render(request, "fridge/fridge_item_confirm_delete.html", {"item": item})

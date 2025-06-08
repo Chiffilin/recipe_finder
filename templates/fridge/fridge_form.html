@@ -1,6 +1,27 @@
-<h2>Додати інгредієнт</h2>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Зберегти</button>
-</form>
+{#<h2>Додати інгредієнт</h2>#}
+{#<form method="POST">#}
+{#    {% csrf_token %}#}
+{#    {{ form.as_p }}#}
+{#    <button type="submit">Зберегти</button>#}
+{#</form>#}
+
+{% extends "_helpers/_base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="card col-md-6 offset-md-3">
+                <div class="card-title">
+                    <h2>Додати у холодильник</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <button type="submit" class="btn btn-primary">Додати</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

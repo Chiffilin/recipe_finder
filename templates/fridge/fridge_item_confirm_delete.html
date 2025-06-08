@@ -1,0 +1,11 @@
+{% extends "_helpers/_base.html" %}
+{% block content %}
+    <h2>Видалити інгредієнт</h2>
+    <p>Ви впевнені, що хочете видалити <strong>{{ item.ingredient.name }}</strong>?</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Так, видалити</button>
+        <a href="{% url 'fridge:fridge' %}" class="btn btn-secondary">Скасувати</a>
+    </form>
+{% endblock %}

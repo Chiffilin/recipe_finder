@@ -1,8 +1,12 @@
-<div class="actions">
+<div class="actions d-flex gap-2">
+    {% if user.is_authenticated %}
+
     {% with pk=recipe.pk %}
         {% url 'base:update_recipe' pk=pk as url %}
-        {% include "_components/button_with_nav.html" with url=url text="Update" %}
+        {% include "_components/button_with_nav.html" with url=url text="Оновити" %}
+
         {% url 'base:delete_recipe' pk=pk as url %}
-        {% include "_components/button_with_nav.html" with url=url variant="danger" text="Delete" %}
+        {% include "_components/button_with_nav.html" with url=url variant="danger" text="Видалити" %}
     {% endwith %}
+    {% endif %}
 </div>
