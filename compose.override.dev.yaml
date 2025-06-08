@@ -7,9 +7,9 @@ services:
     ports:
       - "60000:8000"
 
-    volumes:
-      - ./files:/wd/files
-      - ./db:/wd/db
+    volumes: &app_volumes
+      - ./staticfiles:/wd/staticfiles
+      - ./media:/wd/media
 
     develop:
       watch:
@@ -35,4 +35,12 @@ services:
     # https://github.com/krallin/tini/issues/8
     init: true
 
-    command: runserver 0.0.0.0:8000
+  init:
+    user: ${USER_ID:-1000}
+
+    volumes: *app_volumes
+
+  postgres:
+    ports:
+      - "5432:5432"
+

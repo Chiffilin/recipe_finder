@@ -2,57 +2,37 @@
 FROM python:3.13.1-slim AS base
 
 ENV PYTHONUNBUFFERED=1
-
 ARG WORKDIR=/wd
+ARG USER=user
 
-# [update_and_pre_install]-[BEGIN]
-# Also install "libmagic"
+# Оновлення системи та базових пакетів
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    \
-    apt update \
-    && apt upgrade --yes
-
-# [update_and_pre_install]-[END]
-
-ARG USER=user
+    apt update && apt upgrade --yes && apt install -y libmagic1
 
 WORKDIR ${WORKDIR}
 
-RUN useradd --system ${USER} &&\
-    chown --recursive ${USER} ${WORKDIR}
+# Створення користувача без пароля (system user)
+RUN useradd --system ${USER} && chown --recursive ${USER} ${WORKDIR}
 # [stage__base]-[END]================================================
-
 
 # [stage__builder]-[BEGIN]===============================================
 FROM base AS builder
 
-#COPY --chown=${USER} requirements.txt requirements.txt
-#RUN --mount=type=cache,target=/root/.cache/pip,sharing=locked \
-#    pip install --upgrade pip \
-#    pip install --no-cache-dir --requirement requirements.txt
-
-
+# Копіюємо uv (у тебе воно в образі ghcr.io/astral-sh/uv:0.6.13)
 COPY --from=ghcr.io/astral-sh/uv:0.6.13 /uv /uvx /bin/
-#
-# Compile Python source files to bytecode after installation
-# https://docs.astral.sh/uv/configuration/environment/#uv_compile_bytecode
+
 ENV UV_COMPILE_BYTECODE=1
-# Silences warnings about the use of the "copy" link mode
-# https://docs.astral.sh/uv/reference/settings/#link-mode
 ENV UV_LINK_MODE=copy
-# Enable caching for faster builds
-# https://docs.astral.sh/uv/guides/integration/docker/#caching
 ENV UV_CACHE_DIR=/opt/uv-cache/
-#
+
+# Встановлення залежностей через uv sync (передбачає uv.lock і pyproject.toml)
 RUN --mount=type=cache,target=/opt/uv-cache/ \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     --mount=type=bind,source=.python-version,target=.python-version \
-    \
     uv sync --frozen
 # [stage__builder]-[END]================================================
-
 
 # [stage__final]-[BEGIN]================================================
 FROM base AS final
@@ -61,9 +41,18 @@ ARG USER=user
 ARG WORKDIR=/wd
 ARG VENV_DIR=${WORKDIR}/.venv
 
-COPY --from=builder /wd/.venv ${VENV_DIR}
+# Копіюємо віртуальне середовище з builder stage
+COPY --from=builder ${VENV_DIR} ${VENV_DIR}
+
+# Копіюємо скрипти запуску та код застосунку з потрібними правами
+COPY --chown=${USER} --chmod=555 docker/app/entrypoint.sh /entrypoint.sh
+COPY --chown=${USER} --chmod=555 docker/app/start.sh /start.sh
+#COPY --chown=${USER} --chmod=555 docker/app/init.sh /init.sh
+#COPY --chown=${USER} --chmod=555 docker/app/celery_worker_start.sh /celery_worker_start.sh
+#COPY --chown=${USER} --chmod=555 docker/app/celery_beat_start.sh /celery_beat_start.sh
 
 COPY --chown=${USER} manage.py manage.py
+COPY --chown=${USER} templates/ templates/
 COPY --chown=${USER} core/ core/
 COPY --chown=${USER} apps/ apps/
 
@@ -71,7 +60,6 @@ USER ${USER}
 
 ENV PATH="${VENV_DIR}/bin:$PATH"
 
-ENTRYPOINT ["python", "manage.py"]
-
-#CMD ["--help"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["./start.sh"]
 # [stage__final]-[END]==================================================

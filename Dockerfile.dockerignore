@@ -9,3 +9,5 @@
 !manage.py
 !core/
 !apps/
+!docker/
+!templates/

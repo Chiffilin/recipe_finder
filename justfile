@@ -10,6 +10,11 @@
 import 'just/dev.just'
 import 'just/homework.just'
 
+# List of all commands
+[private]
+@default:
+    just --list --justfile {{ justfile() }}
+
 # [other]-[BEGIN]
 # https://youtu.be/ZXsQAXx_ao0?si=CMMwwtkaWoaGjUTg
 

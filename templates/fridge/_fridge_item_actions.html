@@ -1,9 +1,9 @@
 <div class="actions d-flex gap-2">
     {% with pk=item.pk %}
         {% url 'fridge:update_fridge_item' pk=pk as url %}
-        {% include "_components/button_with_nav.html" with url=url text="Update" %}
+        {% include "_components/button_with_nav.html" with url=url text="Оновити" %}
 
         {% url 'fridge:delete_fridge_item' pk=pk as url %}
-        {% include "_components/button_with_nav.html" with url=url variant="danger" text="Delete" %}
+        {% include "_components/button_with_nav.html" with url=url variant="danger" text="Видалити" %}
     {% endwith %}
 </div>

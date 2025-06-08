@@ -18,5 +18,5 @@ def register(request: HttpRequest) -> HttpResponse:
         )
         login(request, user)
 
-        return redirect(reverse_lazy("base:index"))
+        return redirect(reverse_lazy("base:home"))
     return render(request, "users/register.html", {"form": form})

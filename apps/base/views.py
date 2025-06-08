@@ -14,7 +14,7 @@ def index(
     # return HttpResponse("Hello, world! This is the index page.")
     return render(
         request=request,
-        template_name="base/index.html",
+        template_name="base/home.html",
     )
 
 
@@ -52,10 +52,8 @@ def recipe_detail(request: HttpRequest, pk) -> HttpResponse:
 def find_recipes(request: HttpRequest) -> HttpResponse:
     query = request.GET.get("q")
     recipes = Recipe.objects.all()
-
     if query:
-        recipes = recipes.filter(Q(name__icontains=query) | Q(description__icontains=query))
-
+        recipes = recipes.filter(Q(name__icontains=query) | Q(ingredients__name__icontains=query)).distinct()
     return render(request, "base/recipe_list.html", {"recipes": recipes})
 
 
