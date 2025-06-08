@@ -1,10 +1,10 @@
-# Django Example
+# Ricepe finder
 
 ---
 
-## 🏠 Homework
+## 🏠 Pre-alfa
 
-Homework related actions.
+Recipe site for find eat.
 
 ### ▶️ Run
 
@@ -50,24 +50,33 @@ Create venv, register pre-commit hooks, and install dependencies:
 just init-i-dev
 ```
 
----
+## Install PostgreSQL
 
-## 🐳 Docker
+For this project to run locally,
+you'll need a PostgreSQL database server.
+On most Linux distributions (like Ubuntu/Debian),
+you can install it using your package manager.
+This process typically sets up the PostgreSQL server and creates
+a default postgres system user.
 
-Use services in dockers.
-
-### ▶️ Run
-
-Just run
-
-```shell
-just d-run
+```bash
+sudo apt update
+sudo apt install postgresql postgresql-contrib
 ```
 
-### 🚮 Purge
+After installation, the PostgreSQL service should start automatically. You can verify its status to ensure it's running:
 
-Purge all data related to services
+```bash
+sudo systemctl status postgresql@<VERSION>-main.service
+```
 
-```shell
-just d-purge
+Replace <VERSION> with the specific PostgreSQL version installed on your system (e.g., 14 or 15). You should see Active:
+active (running) in the output.
+
+### Initialize development environment
+
+Create venv, register pre-commit hooks, and install dependencies:
+
+```bash
+just init-i-dev
 ```
