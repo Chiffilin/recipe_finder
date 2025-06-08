@@ -11,9 +11,8 @@ set -o nounset
 # Print a trace of commands.
 set -o xtrace
 # [bash_init]-[END]
-python manage.py makemigrations
-python manage.py migrate
-
 python manage.py collectstatic --noinput
+python manage.py migrate --noinput
+
 
 #python manage.py chats generate --amount 7 --initial

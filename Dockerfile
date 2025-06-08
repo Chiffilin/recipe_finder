@@ -47,7 +47,7 @@ COPY --from=builder ${VENV_DIR} ${VENV_DIR}
 # Копіюємо скрипти запуску та код застосунку з потрібними правами
 COPY --chown=${USER} --chmod=555 docker/app/entrypoint.sh /entrypoint.sh
 COPY --chown=${USER} --chmod=555 docker/app/start.sh /start.sh
-#COPY --chown=${USER} --chmod=555 docker/app/init.sh /init.sh
+COPY --chown=${USER} --chmod=555 docker/app/init.sh /init.sh
 #COPY --chown=${USER} --chmod=555 docker/app/celery_worker_start.sh /celery_worker_start.sh
 #COPY --chown=${USER} --chmod=555 docker/app/celery_beat_start.sh /celery_beat_start.sh
 

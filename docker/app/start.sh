@@ -11,5 +11,6 @@ set -o nounset
 # Print a trace of commands.
 set -o xtrace
 # [bash_init]-[END]
-
+echo "Running init.sh script..."
+/init.sh # <-- Викликаємо init.sh тут!
 python manage.py runserver 0.0.0.0:8000
