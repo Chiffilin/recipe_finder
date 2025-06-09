@@ -1,8 +1,11 @@
 {% extends "_helpers/_base.html" %}
 {% block content %}
-    <div class="container mt-4">
-        <h1 class="mb-4">Додати новий рецепт</h1>
-
+    <div class="container mt-5">
+        <div class="card shadow">
+            <div class="card-body">
+                <h2 class="card-title mb-4">
+                    Додавання рецепта`
+                </h2>
         <form method="POST">
             {% csrf_token %}
 
@@ -66,10 +69,12 @@
                 {{ form.new_ingredients }}
                 <div class="form-text">{{ form.new_ingredients.help_text }}</div>
             </div>
-
+            <div class="d-flex justify-content-between">
             <button type="submit" class="btn btn-primary">Додати рецепт</button>
+                <a href="{% url 'base:recipe_list' %}" class="btn btn-secondary">← Назад</a>
+            </div>
         </form>
-
-        <p class="mt-4">{% include '_helpers/_footer.html' %}</p>
+            </div>
+        </div>
     </div>
 {% endblock content %}
