@@ -32,13 +32,23 @@
                 <div class="row mt-4">
                     <div class="col-md-6">
                         <p><strong>Час приготування:</strong> {{ recipe.cooking_time }} хв</p>
+                        {% if recipe.rating %}
                         <p><strong>Рейтинг:</strong> {{ recipe.rating|default:"—" }}</p>
+                        {% endif %}
                     </div>
                     <div class="col-md-6">
-                        <p><strong>Калорії:</strong> {{ recipe.calories|default:"—" }}</p>
+                        {% if recipe.calories %}
+                            <p><strong>Калорії:</strong> {{ recipe.calories|default:"—" }}</p>
+                        {% endif %}
+                        {% if recipe.protein %}
                         <p><strong>Білки:</strong> {{ recipe.protein|default:"—" }} г</p>
+                        {% endif %}
+                        {% if recipe.fat %}
                         <p><strong>Жири:</strong> {{ recipe.fat|default:"—" }} г</p>
+                        {% endif %}
+                        {% if recipe.carbohydrates %}
                         <p><strong>Вуглеводи:</strong> {{ recipe.carbohydrates|default:"—" }} г</p>
+                        {% endif %}
                     </div>
                 </div>
 

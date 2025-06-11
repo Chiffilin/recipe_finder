@@ -3,8 +3,64 @@
 {% block content %}
     <div class="container py-4">
         <h1 class="mb-4">Рецепти</h1>
-        <form class="d-flex mb-4" method="get" action="{% url 'base:recipe_list' %}">
+
+        {# 🔍 ФОРМА ПОШУКУ, ФІЛЬТРАЦІЇ ТА СОРТУВАННЯ - ОДНА ЄДИНА ФОРМА #}
+        <form class="mb-4" method="get" action="{% url 'base:find_recipes' %}"> {# <-- Змінено action на find_recipes #}
+            <div class="row g-3 align-items-end">
+                {# Поле для текстового пошуку #}
+                <div class="col-md-6">
+                    <label for="search_query" class="form-label visually-hidden">Пошук</label>
+                    <input class="form-control" type="search" name="q" id="search_query"
+                           placeholder="Наприклад: курка, помідор, сир або 'Овочевий салат'"
+                           value="{{ current_query }}">
+                </div>
+
+                {# Поле для фільтрації за кількістю інгредієнтів #}
+                {#                 Розкоментуйте цей блок, якщо ви використовуєте його у find_recipes #}
+                <div class="col-md-3">
+                    <label for="max_ingredients_input" class="form-label visually-hidden">Кількість інгредієнтів</label>
+                    <div class="input-group">
+                        <span class="input-group-text">Інгредієнтів до:</span>
+                        <input type="number" name="max_ingredients" id="max_ingredients_input" class="form-control"
+                               placeholder="Кількість" min="1"
+                               value="{{ current_max_ingredients }}">
+                    </div>
+                </div>
+
+                {# Випадаючий список для сортування #}
+                <div class="col-md-2"> {# Якщо є max_ingredients, то col-md-2 #}
+                    <label for="sort_by_select" class="form-label visually-hidden">Сортувати за</label>
+                    <select class="form-select" id="sort_by_select" name="sort_by">
+                        <option value="">Без сортування</option>
+                        <option value="name_asc" {% if current_sort_by == 'name_asc' %}selected{% endif %}>Назвою
+                            (А-Я)
+                        </option>
+                        <option value="name_desc" {% if current_sort_by == 'name_desc' %}selected{% endif %}>Назвою
+                            (Я-А)
+                        </option>
+                        <option value="ingredients_asc"
+                                {% if current_sort_by == 'ingredients_asc' %}selected{% endif %}>Кількістю інгредієнтів
+                            (зростання)
+                        </option>
+                        <option value="ingredients_desc"
+                                {% if current_sort_by == 'ingredients_desc' %}selected{% endif %}>Кількістю інгредієнтів
+                            (спадання)
+                        </option>
+                    </select>
+                </div>
+
+                {# Кнопка відправки форми #}
+                <div class="col-md-1">
+                    <button class="btn btn-primary w-100" type="submit">Пошук</button>
+                </div>
+            </div>
+            <div class="form-text mt-2">Введіть назву рецепта або інгредієнти через кому, обмежте кількість інгредієнтів
+                або відсортуйте результати.
+            </div>
         </form>
+
+        <hr>
+
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             {% for recipe in recipes %}
                 <div class="col">
@@ -16,10 +72,13 @@
                                     {{ recipe.name }}
                                 </a>
                             </h5>
-                            <p class="card-text">{{ recipe.description|truncatewords:20 }}</p>
+                            <p class="card-text">{{ recipe.instructions|truncatewords:20 }}</p>
 
                             <ul class="list-unstyled small mt-2 mb-3 text-muted">
                                 <li><strong>Час приготування:</strong> {{ recipe.cooking_time }} хв</li>
+                                {% if recipe.num_ingredients is not None %}
+                                    <li><strong>Інгредієнтів:</strong> {{ recipe.num_ingredients }}</li>
+                                {% endif %}
                                 {% if recipe.rating %}
                                     <li><strong>Рейтинг:</strong> {{ recipe.rating }}</li>{% endif %}
                                 {% if recipe.calories %}
@@ -43,8 +102,10 @@
                     </div>
                 </div>
             {% empty %}
-                <div class="col">
-                    <p class="text-muted">Немає доступних рецептів.</p>
+                <div class="col-12">
+                    <div class="alert alert-warning text-center" role="alert">
+                        Немає доступних рецептів, що відповідають вашим критеріям.
+                    </div>
                 </div>
             {% endfor %}
         </div>
