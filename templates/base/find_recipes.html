@@ -1,21 +1,5 @@
 {% extends "_helpers/_base.html" %}
 {% block content %}
-    {#<!-- 🔍 Пошукова форма -->#}
-    {#        <form class="d-flex mb-4" method="get" action="{% url 'base:recipe_list' %}">#}
-    {#            <input class="form-control me-2" type="search" name="q"#}
-    {#                   placeholder="Пошук рецептів..." aria-label="Пошук"#}
-    {#                   value="{{ request.GET.q }}">#}
-    {#            <button class="btn btn-outline-success" type="submit">Пошук</button>#}
-    {#        </form>#}
-    {#    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">#}
-    {#            {% for recipe in recipes %}#}
-    {#                <!-- Карточка рецепту (як у тебе) -->#}
-    {#            {% empty %}#}
-    {#                <div class="col">#}
-    {#                    <p class="text-muted">Немає доступних рецептів.</p>#}
-    {#                </div>#}
-    {#            {% endfor %}#}
-    {#        </div>#}
 
     <div class="container mt-5">
         <div class="row justify-content-center">
@@ -24,13 +8,17 @@
                     <div class="card-body">
                         <h3 class="card-title mb-4">🔎 Пошук рецептів за інгредієнтами</h3>
 
-                        <form method="POST" class="mb-4">
+                        <form method="GET" class="mb-4">
                             {% csrf_token %}
-                            <div class="input-group">
-                                <input type="text" name="ingredients_text" class="form-control"
-                                       placeholder="Наприклад: молоко, яйця, цукор">
-                                <button type="submit" class="btn btn-primary">Знайти</button>
-                            </div>
+                            <form class="d-flex" method="get" action="{% url 'base:find_recipes' %}">
+                                <input class="form-control me-2"
+                                       type="search"
+                                       placeholder="Пошук рецептів"
+                                       aria-label="Search"
+                                       name="q"
+                                       value="{{ request.GET.q }}">
+                                <button class="btn btn-outline-success" type="submit">Пошук</button>
+                            </form>
                             <div class="form-text mt-2">Введіть інгредієнти через кому. Наприклад: <em>молоко, яйця</em>
                             </div>
                         </form>

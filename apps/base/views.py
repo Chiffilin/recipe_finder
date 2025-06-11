@@ -52,8 +52,27 @@ def recipe_detail(request: HttpRequest, pk) -> HttpResponse:
 def find_recipes(request: HttpRequest) -> HttpResponse:
     query = request.GET.get("q")
     recipes = Recipe.objects.all()
+
     if query:
-        recipes = recipes.filter(Q(name__icontains=query) | Q(ingredients__name__icontains=query)).distinct()
+        # Розбиваємо рядок запиту на окремі компоненти за комою
+        # Видаляємо зайві пробіли та фільтруємо порожні елементи
+        search_terms = [term.strip() for term in query.split(",") if term.strip()]
+
+        if search_terms:
+            # Створюємо порожній Q-об'єкт для побудови динамічного OR-запиту
+            complex_query = Q()
+
+            for term in search_terms:
+                # Додаємо умови до Q-об'єкта з оператором OR (|)
+                # Шукаємо за назвою рецепта АБО за назвою інгредієнта
+                complex_query |= Q(name__icontains=term) | Q(ingredients__name__icontains=term)
+
+            recipes = recipes.filter(complex_query).distinct()
+        else:
+            # Якщо після розбиття запит виявився порожнім (наприклад, тільки коми або пробіли)
+            # повертаємо всі рецепти або порожній список, залежить від бажаної логіки
+            recipes = Recipe.objects.none()  # Або Recipe.objects.all()
+
     return render(request, "base/recipe_list.html", {"recipes": recipes})
 
 

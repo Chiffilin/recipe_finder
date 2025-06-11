@@ -1,6 +1,80 @@
-{% extends "_helpers/_base.html" %}
+{# apps/base/templates/base/admin/import_themealdb.html #}
+{% extends 'admin/base.html' %} {# Успадковуємо базовий шаблон адмінки для стандартного вигляду #}
+{% load i18n admin_urls static %} {# Завантажуємо потрібні теги #}
+
+{# Додаємо стилі, щоб форма виглядала як інші форми адмінки #}
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}">
+{% endblock %}
 
 {% block content %}
-    <h1>Welcome to my site </h1>
+    <div id="content-main">
+        {# Хлібні крихти для навігації #}
+        <ul class="breadcrumb">
+            <li><a href="{% url 'admin:index' %}">{% translate 'Home' %}</a></li>
+            <li><a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+            </li>
+            <li><a href="{% url 'admin:base_recipe_changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a></li>
+            <li>Імпорт рецептів</li>
+        </ul>
 
-{% endblock content %}
+        <h1>{% trans "Імпорт рецептів з TheMealDB" %}</h1>
+        <p class="help">Використовуйте цю форму для імпорту рецептів безпосередньо з API TheMealDB.</p>
+
+        {# Відображення повідомлень (success, error, info) #}
+        {% if messages %}
+            <ul class="messagelist">{% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}</ul>
+        {% endif %}
+
+        <form action="" method="post" id="import-form">
+            {% csrf_token %} {# Важливо для безпеки форм Django #}
+
+            {# Відображення полів форми. Django автоматично стилізує їх за допомогою forms.css #}
+            <fieldset class="module aligned">
+                <div class="form-row">
+                    {{ form.import_type.label_tag }}
+                    {{ form.import_type }}
+                    {% if form.import_type.help_text %}
+                        <p class="help">{{ form.import_type.help_text }}</p>
+                    {% endif %}
+                    {% if form.import_type.errors %}
+                        <ul class="errorlist">{% for error in form.import_type.errors %}
+                            <li>{{ error }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-row">
+                    {{ form.value.label_tag }}
+                    {{ form.value }}
+                    {% if form.value.help_text %}
+                        <p class="help">{{ form.value.help_text }}</p>
+                    {% endif %}
+                    {% if form.value.errors %}
+                        <ul class="errorlist">{% for error in form.value.errors %}
+                            <li>{{ error }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-row">
+                    {{ form.limit.label_tag }}
+                    {{ form.limit }}
+                    {% if form.limit.help_text %}
+                        <p class="help">{{ form.limit.help_text }}</p>
+                    {% endif %}
+                    {% if form.limit.errors %}
+                        <ul class="errorlist">{% for error in form.limit.errors %}
+                            <li>{{ error }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+            </fieldset>
+
+            {# Кнопка відправки форми #}
+            <div class="submit-row">
+                <input type="submit" value="Імпортувати Рецепти" class="default" name="_import">
+            </div>
+        </form>
+    </div>
+{% endblock %}
