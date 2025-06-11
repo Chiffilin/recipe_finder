@@ -1,0 +1,47 @@
+{# base/templates/base/import_recipes_form.html #}
+{% extends "_helpers/_base.html" %}
+{% load static %}
+
+{% block title %}Імпорт рецептів за назвою{% endblock %}
+
+{% block content %}
+    <div class="container py-4">
+        <h1 class="mb-4">Імпорт рецептів з TheMealDB за назвою</h1>
+
+        {# Відображення повідомлень (success, error, info) #}
+        {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}"
+                         role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <p class="card-text">Введіть назву рецепту, який ви хочете знайти та імпортувати з TheMealDB.</p>
+
+                <form action="{% url 'base:import_recipes_from_api_page' %}" method="post" class="mt-4">
+                    {% csrf_token %} {# Обов'язково для POST-запитів #}
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-6">
+                            <label for="id_search_term" class="form-label">Назва рецепту:</label>
+                            <input type="text" class="form-control" id="id_search_term" name="search_term"
+                                   value="{{ current_search_term|default_if_none:'' }}"
+                                   placeholder="Наприклад: Pasta Carbonara" required>
+                        </div>
+                        <div class="col-md-auto">
+                            <button type="submit" class="btn btn-primary">Знайти та імпортувати</button>
+                        </div>
+                    </div>
+                </form>
+                <hr>
+                <p class="text-muted small">Після імпорту ви можете переглянути рецепти на <a
+                        href="{% url 'base:recipe_list' %}">сторінці списку рецептів</a>.</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -13,4 +13,5 @@ urlpatterns = [
     path("add/", views.add_recipe, name="add_recipe"),
     path("recipes/<int:pk>/delete/", views.delete_recipe, name="delete_recipe"),
     path("recipe/<int:pk>/edit/", views.update_recipe, name="update_recipe"),
+    path("import-recipes/", views.import_recipes_from_api, name="import_recipes_from_api_page"),
 ]

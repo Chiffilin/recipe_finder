@@ -1,10 +1,13 @@
+import requests
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.db.models import Count, Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.base.forms.recipe_form import RecipeForm
-from apps.base.models import Recipe
+from apps.base.models import Ingredient, Recipe
 
 
 def index(
@@ -187,3 +190,122 @@ def update_recipe(request: HttpRequest, pk: int) -> HttpResponse:
             "recipe": recipe,
         },
     )
+
+
+THEMEALDB_API_BASE_URL = "https://www.themealdb.com/api/json/v1/1/"
+
+
+@login_required  # Дозволяє доступ лише авторизованим користувачам
+def import_recipes_from_api(request: HttpRequest) -> HttpResponse:
+    """Імпортує рецепти з TheMealDB API за введеною назвою.
+    Ця функція доступна за окремим URL для авторизованих користувачів-персоналу.
+    """
+    if not request.user.is_staff:
+        messages.error(request, "У вас немає дозволу на виконання цієї операції.")
+        return redirect("base:recipe_list")
+
+    search_term = ""  # Зберігаємо останній пошуковий термін для відображення у формі
+
+    if request.method == "POST":
+        search_term = request.POST.get("search_term", "").strip()
+
+        if not search_term:
+            messages.error(request, "Будь ласка, введіть назву рецепту для пошуку.")
+            # Повертаємося до форми з повідомленням про помилку
+            return render(request, "base/import_recipes_form.html", {"current_search_term": search_term})
+
+        imported_count = 0
+        skipped_count = 0
+        errors = []
+
+        try:
+            # Змінено ендпоінт на search.php?s=
+            # Важливо: використовуємо f-рядок для безпечного включення search_term
+            response = requests.get(f"{THEMEALDB_API_BASE_URL}search.php?s={search_term}", timeout=10)
+            response.raise_for_status()  # Підніме HTTPError для поганих відповідей
+
+            data = response.json()
+            meals = data.get("meals")
+
+            if not meals:
+                messages.info(request, f"Рецептів за запитом '{search_term}' не знайдено в TheMealDB.")
+                # Повертаємося до форми з повідомленням
+                return render(request, "base/import_recipes_form.html", {"current_search_term": search_term})
+
+            for meal_data in meals:  # TheMealDB може повернути кілька рецептів
+                try:
+                    meal_id = meal_data.get("idMeal")
+
+                    # Перевіряємо, чи рецепт вже існує за external_id
+                    if Recipe.objects.filter(external_id=meal_id).exists():
+                        skipped_count += 1
+                        continue
+
+                    with transaction.atomic():
+                        recipe_name = meal_data.get("strMeal")
+                        recipe_instructions = meal_data.get("strInstructions")
+                        recipe_image_url = meal_data.get("strMealThumb")
+                        recipe_category_name = meal_data.get("strCategory")
+                        recipe_cuisine_name = meal_data.get("strArea")
+                        recipe_youtube_url = meal_data.get("strYoutube")
+                        cooking_time = 30  # Default if not available
+
+                        # Створюємо Recipe, використовуючи CharField для category та cuisine
+                        recipe = Recipe.objects.create(
+                            name=recipe_name,
+                            description=recipe_instructions[:1000] if recipe_instructions else "",
+                            instructions=recipe_instructions,
+                            cooking_time=cooking_time,
+                            image_url=recipe_image_url,
+                            youtube_url=recipe_youtube_url,
+                            external_id=meal_id,
+                            category=recipe_category_name,
+                            cuisine=recipe_cuisine_name,
+                        )
+
+                        for i in range(1, 21):
+                            ingredient_name = meal_data.get(f"strIngredient{i}")
+                            # ingredient_measure = meal_data.get(f"strMeasure{i}") # Якщо потрібні мірки
+
+                            if (
+                                ingredient_name
+                                and ingredient_name.strip()
+                                and ingredient_name.strip().lower() != "null"
+                            ):
+                                ingredient_obj, created = Ingredient.objects.get_or_create(name=ingredient_name.strip())
+                                recipe.ingredients.add(ingredient_obj)
+
+                    imported_count += 1
+
+                except Exception as e:
+                    errors.append(f"Неочікувана помилка при обробці рецепту з ID {meal_id}: {e}")
+
+        except requests.exceptions.Timeout:
+            messages.error(request, "Запит до TheMealDB API перевищив час очікування. Спробуйте ще раз.")
+        except requests.exceptions.ConnectionError:
+            messages.error(request, "Не вдалося встановити з'єднання з TheMealDB API. Перевірте інтернет-з'єднання.")
+        except requests.exceptions.HTTPError as e:
+            messages.error(
+                request,
+                f"Помилка HTTP від TheMealDB API: {e.response.status_code} - {e.response.reason}. Можливо, API повернув помилку для запиту.",
+            )
+        except requests.exceptions.RequestException as e:
+            messages.error(request, f"Загальна помилка при запиті до TheMealDB API: {e}")
+        except Exception as e:
+            messages.error(request, f"Критична помилка під час імпорту: {e}")
+
+        # Після імпорту, збираємо повідомлення
+        if imported_count > 0:
+            messages.success(request, f"Успішно імпортовано {imported_count} рецептів за запитом '{search_term}'.")
+        if skipped_count > 0:
+            messages.info(request, f"Пропущено {skipped_count} рецептів (вже існують) за запитом '{search_term}'.")
+        if errors:
+            for error_msg in errors:
+                messages.error(request, f"Помилка імпорту: {error_msg}")
+
+        # Після обробки POST-запиту, рендеримо форму з оновленими повідомленнями
+        return render(request, "base/import_recipes_form.html", {"current_search_term": search_term})
+
+    # Якщо це GET-запит, рендеримо шаблон з формою
+    context = {"current_search_term": search_term}
+    return render(request, "base/import_recipes_form.html", context)

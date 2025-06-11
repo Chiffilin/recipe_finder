@@ -3,22 +3,36 @@
 {% block content %}
     <div class="container mt-4">
         <div class="card shadow">
+            {% if recipe.image_url %}
+                <img src="{{ recipe.image_url }}" alt="{{ recipe.name }}"
+                     class="fixed-img mx-auto d-block my-3">        {% endif %}
             <div class="card-body">
                 <h2 class="card-title">{{ recipe.name }}</h2>
 
+                <div class="mb-3">
                 {% if recipe.category %}
                     <span class="badge bg-primary">{{ recipe.category }}</span>
                 {% endif %}
                 {% if recipe.cuisine %}
                     <span class="badge bg-secondary">{{ recipe.cuisine }}</span>
                 {% endif %}
+                    {% if recipe.external_id %}
+                        <span class="badge bg-dark">ID: {{ recipe.external_id }}</span>
+                    {% endif %}
+                </div>
 
-                <hr>
+                {#            <p class="card-text">{{ recipe.description }}</p>#}
 
-                <p class="card-text">{{ recipe.description }}</p>
+                {% if recipe.youtube_url %}
+                    <p>
+                        <a href="{{ recipe.youtube_url }}" target="_blank" class="btn btn-outline-danger">
+                            <i class="bi bi-youtube"></i> Дивитися відео
+                        </a>
+                    </p>
+                {% endif %}
 
                 <h5 class="mt-4">🧾 Інструкції:</h5>
-                <pre class="bg-light p-3 rounded">{{ recipe.instructions }}</pre>
+                <p class="card-text">{{ recipe.instructions }}</p>
 
                 <h5 class="mt-4">🧂 Інгредієнти:</h5>
                 <ul>

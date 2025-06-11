@@ -25,7 +25,12 @@ class Recipe(models.Model):
 
     cooking_time = models.PositiveIntegerField(help_text="Час приготування в хвилинах", default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+    # --- ДОДАЙТЕ ЦІ ПОЛЯ ---
+    external_id = models.CharField(max_length=255, unique=True, blank=True, null=True)
+    image_url = models.URLField(max_length=500, blank=True, null=True)
+    youtube_url = models.URLField(max_length=500, blank=True, null=True)
 
+    # --- КІНЕЦЬ ДОДАВАННЯ ---
     def __str__(self) -> str:
         return self.name
 

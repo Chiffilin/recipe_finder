@@ -14,4 +14,15 @@ set -o xtrace
 python manage.py collectstatic --noinput
 python manage.py migrate --noinput
 
+# Створити суперюзера, якщо він не існує
+# Використовуємо змінні середовища для безпеки та гнучкості
+DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME:-admin}
+DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL:-admin@example.com}
+DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD:-admin} # УНИКАТИ В PRODUCTION!
 
+echo "Creating superuser '$DJANGO_SUPERUSER_USERNAME'..."
+python manage.py createsuperuser --noinput \
+    --username "$DJANGO_SUPERUSER_USERNAME" \
+    --email "$DJANGO_SUPERUSER_EMAIL" || true
+    # '|| true' дозволяє скрипту продовжити, навіть якщо суперюзер вже існує
+echo "Superuser creation finished."
